@@ -9,10 +9,14 @@ export default function Results({ movie, onClick }) {
 			<div className="results-container">
 				<div className="movie-row">
 					<div className="header-row">
-						<img src={movie.Poster} className="movie-poster" />
+						<img src={movie.Poster} className="movie-poster" alt={movie.Title} />
 						<div className="details">
 							<h2 className="movie-title">{ movie.Title }</h2>
-							<p className="movie-year">{ movie.Year } | { movie.Rated } | {movie.Metascore}% <span>👍</span></p>
+							<p className="movie-year">
+								{ movie.Year } | 
+								{ movie.Rated } | 
+								{movie.Metascore}% <span role="img" aria-label="thumbs-up">👍</span>
+							</p>
 							<p className="movie-plot">
 								{ movie.Plot }
 							</p>
