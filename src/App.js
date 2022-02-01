@@ -46,10 +46,6 @@ const App = () => {
     setDisplayModal(false);
   }
 
-  const confirmSaveMovie = () => {
-    setDisplayModal(true);
-  }
-
   const onDecline = () => {
     setDisplayModal(false);
   }
