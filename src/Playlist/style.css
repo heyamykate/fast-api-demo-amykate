@@ -1,0 +1,20 @@
+.playlist-header {
+	margin: 0 0 20px 0;
+}
+
+.playlist-header h2 {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.playlist-contents {
+	display: flex;
+	flex-direction: column;
+}
+
+.playlist {
+	border: 1px solid lightgray;
+	border-radius: 10px;
+	width: 100%;
+	padding: 15px;
+}

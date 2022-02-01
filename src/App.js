@@ -1,50 +1,81 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
+import React, { useRef, useState } from "react"
 import "./App.css"
+import Header from "./Header";
+import Results from "./Results";
+import SearchBar from "./SearchBar"
+import Playlist from "./Playlist";
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+const App = () => {
+  const [movie, setMovie] = useState({});
+  const inputRef = useRef();
+  const throttle = useRef(false);
+  const [playlistMovies, setPlaylistMovies] = useState([]);
+
+  const onSearchSubmit = async => {
+    if (throttle.current) {
+      return;
+    }
+    if (!inputRef.current.value.trim()) {
+      setMovie({});
+      return;
+    }
+    throttle.current = true;
+    setTimeout(() => {
+      throttle.current = false;
+      fetch(`http://www.omdbapi.com/?apikey=8abcbc5&t=${inputRef.current.value}`)
+        .then(async response => {
+          if (!response.ok) {
+            console.log('error');
+          } else {
+            const data = await response.json();
+            setMovie(data);
+            console.log(data)
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        })
+      }, 600)
   }
 
-  handleClick = api => e => {
-    e.preventDefault()
-
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
+  const saveMovieToPlaylist = (movie) => {
+    let playlistCopy = playlistMovies.slice();
+    playlistCopy.push(movie);
+    setPlaylistMovies(playlistCopy);
   }
 
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
+  const confirmSaveMovie = (movie) => {
+    const result = window.confirm("Are you sure you want to save this movie?");
+    if (result) {
+      saveMovieToPlaylist(movie);
+    }
   }
-}
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
+  return (
+    <div className="Container">
+      <Header />
+      <div className="flex-container">
+        <div className="left-container">
+          <SearchBar 
+            onSearchSubmit={onSearchSubmit} 
+            inputRef={inputRef} />
+          <Results movie={movie} saveMovieToPlaylist={confirmSaveMovie}/>
+        </div>
+        <div className="right-container">
+          <Playlist movies={playlistMovies} />
+        </div>
       </div>
-    )
-  }
+
+    </div>
+  )
 }
 
 export default App
+
+// #ffb8c6
+// Inter font
+// Box shadows 0 0 50px 5px rgb(0 0 0 / 25%)
+// Form search input
+// List render for movies
+// Playlist of movies
+// Save functionality 
