@@ -2,7 +2,7 @@ import React from 'react'
 
 import './style.css'
 
-export default function Results({ movie, saveMovieToPlaylist }) {
+export default function Results({ movie, onClick }) {
 	const hasMovieResult = Object.keys(movie).length > 0;
 	return (
 		hasMovieResult && (
@@ -19,7 +19,7 @@ export default function Results({ movie, saveMovieToPlaylist }) {
 						</div>
 					</div>
 					<div className="action-row">
-						<button className="btn" onClick={() => saveMovieToPlaylist(movie)}>
+						<button className="btn" onClick={onClick}>
 							Add to Playlist
 						</button>
 					</div>

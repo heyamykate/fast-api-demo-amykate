@@ -4,12 +4,14 @@ import Header from "./Header";
 import Results from "./Results";
 import SearchBar from "./SearchBar"
 import Playlist from "./Playlist";
+import Confirm from "./Confirm";
 
 const App = () => {
   const [movie, setMovie] = useState({});
   const inputRef = useRef();
   const throttle = useRef(false);
   const [playlistMovies, setPlaylistMovies] = useState([]);
+  const [displayModal, setDisplayModal] = useState(false);
 
   const onSearchSubmit = async => {
     if (throttle.current) {
@@ -29,7 +31,6 @@ const App = () => {
           } else {
             const data = await response.json();
             setMovie(data);
-            console.log(data)
           }
         })
         .catch(err => {
@@ -42,31 +43,38 @@ const App = () => {
     let playlistCopy = playlistMovies.slice();
     playlistCopy.push(movie);
     setPlaylistMovies(playlistCopy);
+    setDisplayModal(false);
   }
 
-  const confirmSaveMovie = (movie) => {
-    const result = window.confirm("Are you sure you want to save this movie?");
-    if (result) {
-      saveMovieToPlaylist(movie);
-    }
+  const confirmSaveMovie = () => {
+    setDisplayModal(true);
+  }
+
+  const onDecline = () => {
+    setDisplayModal(false);
   }
 
   return (
-    <div className="Container">
-      <Header />
-      <div className="flex-container">
-        <div className="left-container">
-          <SearchBar 
-            onSearchSubmit={onSearchSubmit} 
-            inputRef={inputRef} />
-          <Results movie={movie} saveMovieToPlaylist={confirmSaveMovie}/>
-        </div>
-        <div className="right-container">
-          <Playlist movies={playlistMovies} />
+    <React.Fragment>
+      {displayModal && (
+        <Confirm onConfirm={() => saveMovieToPlaylist(movie)} onDecline={onDecline} />
+      )}
+      <div className="Container">
+        <Header />
+        <div className="flex-container">
+          <div className="left-container">
+            <SearchBar 
+              onSearchSubmit={onSearchSubmit} 
+              inputRef={inputRef} />
+            <Results movie={movie} onClick={() => setDisplayModal(true)}/>
+          </div>
+          <div className="right-container">
+            <Playlist movies={playlistMovies} />
+          </div>
         </div>
       </div>
+    </React.Fragment>
 
-    </div>
   )
 }
 
