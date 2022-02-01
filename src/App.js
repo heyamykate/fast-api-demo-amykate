@@ -24,7 +24,7 @@ const App = () => {
     throttle.current = true;
     setTimeout(() => {
       throttle.current = false;
-      fetch(`http://www.omdbapi.com/?apikey=8abcbc5&t=${inputRef.current.value}`)
+      fetch(`https://www.omdbapi.com/?apikey=8abcbc5&t=${inputRef.current.value}`)
         .then(async response => {
           if (!response.ok) {
             console.log('error');
